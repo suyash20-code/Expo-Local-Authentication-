@@ -1,48 +1,44 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { AppState } from "react-native";
-import { useRouter } from "expo-router";
+import {MMKV} from "react-native-mmkv"
+const storage = new MMKV({
+    id: 'UserInactivity',
+})
 
 const LOCK_TIME = 3000;
 
-export const UserInactivityProvider = ({ children }: any) => {
-  const appState = useRef(AppState.currentState);
-  const router = useRouter();
+export const UserInactivityProvider = ({children}:any) =>{
+    const appState = useRef(AppState.currentState);
+    const router = useRouter();
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener(
-      "change",
-      handleAppStateChange
-    );
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+    useEffect(()=>{
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+        return () =>{
+            subscription.remove();
+        }
+    },[])
 
-  const handleAppStateChange = async (nextAppState: any) => {
-    console.log("appstate", appState.current, nextAppState);
-    if (nextAppState === "inactive") {
-      router.push("/(modals)/white");
-    } else if (router.canGoBack()) {
-      router.back();
+    const handleAppStateChange = (nextAppState: any)=>{
+        console.log('appstate', appState.current, nextAppState);
+        if (nextAppState === 'inactive'){
+            router.push('/(modals)/white')
+        } else if(router.canGoBack()){
+                router.back();
+            }
+        if(nextAppState === 'background'){
+            recordStartTime();
+        }else if(nextAppState === 'active' && appState.current.match(/background/)){
+            const elapsed = Date.now() - (storage.getNumber('startTime') || 0);
+            if(elapsed >= LOCK_TIME){
+                router.push('/(modals)/lock')
+            }
+
+        }
+        appState.current = nextAppState;
     }
-    if (nextAppState === "background") {
-      await AsyncStorage.setItem(
-        "startTime",
-        Date.now().toString()
-      );
-    } else if (
-      nextAppState === "active" &&
-      appState.current.match(/background/)
-    ) {
-      const startTime = await AsyncStorage.getItem("startTime");
-      const elapsed = Date.now() - (parseInt(startTime) || 0);
-      if (elapsed >= LOCK_TIME) {
-        router.push("/(modals)/lock");
-      }
+    const recordStartTime = () =>{
+        storage.set('startTime', Date.now());
     }
-    appState.current = nextAppState;
-  };
-
-  return children;
-};
+    return children
+}  

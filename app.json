@@ -14,10 +14,23 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission":"Allow $(com.suyash20.securityapp) to use Face ID."
+          "faceIDPermission": "Allow $(com.suyash20.securityapp) to use Face ID."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
+        }
+      ],
+      [
+        "react-native-crisp-chat-sdk",
+        {
+          "websiteId": "a0d435fb-1c28-46db-8297-75ba16e88430"
         }
       ]
-
     ],
     "experiments": {
       "typedRoutes": true,
@@ -35,14 +48,35 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow $(com.suyash20.securityapp) to use Face ID."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.suyash20.securityapp"
+      "package": "com.suyash20.securityapp",
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ]
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5571f497-e03f-4766-85d9-280dae195f6b"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5571f497-e03f-4766-85d9-280dae195f6b"
     }
   }
 }

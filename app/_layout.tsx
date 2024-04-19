@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router';
 import { UserInactivityProvider } from '~/context/UserInactivity';
-
+// add Stack inside the UserInactivityProvider for lock screen
 export default function Layout() {
-  return <UserInactivityProvider>
+  return (
     <Stack>
       <Stack.Screen name='(modals)/white'
         options={{
@@ -21,6 +21,8 @@ export default function Layout() {
 
       </Stack.Screen>
     </Stack>
-  </UserInactivityProvider> 
+  )
+    
+  
   
 }
