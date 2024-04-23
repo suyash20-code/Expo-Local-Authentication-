@@ -11,3 +11,6 @@ const chat = () => {
 }
 
 export default chat
+
+// npx eas build --profile development --platform android
+// npx eas update --branch preview --message "Updating the app"
